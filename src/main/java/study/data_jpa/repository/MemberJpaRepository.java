@@ -7,7 +7,6 @@ import study.data_jpa.entity.Member;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Repository
 public class MemberJpaRepository {
@@ -56,5 +55,27 @@ public class MemberJpaRepository {
                 .setParameter("age", age)
                 .getResultList();
         return result;
+    }
+
+    public List<Member> findByPage(int age, int offset, int limit) {
+        return em.createQuery("select m from Member m where m.age = :age order by m.username desc")
+                .setParameter("age", age)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public long totalCount(int age) {
+        return em.createQuery("select count(m) from Member m where m.age = :age", Long.class)
+                .setParameter("age", age)
+                .getSingleResult();
+    }
+
+    public int bulkAgePlus(int age) {
+        int resultCount = em.createQuery("update Member m set m.age = m.age + 1 where m.age >= :age")
+                .setParameter("age", age)
+                .executeUpdate();
+
+        return resultCount;
     }
 }

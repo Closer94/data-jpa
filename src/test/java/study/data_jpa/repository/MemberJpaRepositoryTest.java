@@ -88,4 +88,48 @@ class MemberJpaRepositoryTest {
         //then
         
     }
+
+    @Test
+    public void paging() throws Exception{
+        //given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 10));
+        memberJpaRepository.save(new Member("member3", 10));
+        memberJpaRepository.save(new Member("member4", 10));
+        memberJpaRepository.save(new Member("member5", 10));
+        memberJpaRepository.save(new Member("member6", 10));
+        memberJpaRepository.save(new Member("member7", 10));
+        memberJpaRepository.save(new Member("member8", 10));
+        memberJpaRepository.save(new Member("member9", 10));
+        memberJpaRepository.save(new Member("member10", 10));
+
+        int age = 10;
+        int offset = 1;
+        int limit = 3;
+
+        //when
+
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        long totalCount = memberJpaRepository.totalCount(age);
+
+        //then
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(10);
+    }
+
+    @Test
+    public void bulkUpdate() throws Exception{
+        //given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 19));
+        memberJpaRepository.save(new Member("member3", 20));
+        memberJpaRepository.save(new Member("member4", 21));
+        memberJpaRepository.save(new Member("member5", 40));
+
+        //when
+        int resultCount = memberJpaRepository.bulkAgePlus(20);//20살 이상은 모두 +1
+
+        //then
+        assertThat(resultCount).isEqualTo(3);
+    }
 }
